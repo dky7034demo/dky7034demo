@@ -1,0 +1,18 @@
+name: Issue to Slack Notifier
+
+on:
+  issues:
+    types: [opened]  # 새로운 이슈가 열릴 때 트리거됨
+
+jobs:
+  send-to-slack:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Send issue to Slack
+        run: |
+          curl -X POST -H 'Content-type: application/json' \
+          --data '{"text": "New issue created: #${{ github.event.issue.number }} - ${{ github.event.issue.title }}\n${{ github.event.issue.html_url }}"}' \
+          ${{ secrets.SLACK_WEBHOOK_URL }}
+        # curl: Webhook URL로 HTTP 요청을 보내 슬랙에 메시지 전송. 메시지에는 이슈 번호, 제목, 링크가 포함됨
+        # Github Secrets에 저장된 Webhook URL을 사용하여 슬랙에 메시지를 보냄
